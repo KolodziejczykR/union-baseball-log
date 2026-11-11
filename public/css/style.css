@@ -1,0 +1,123 @@
+/* AI Tool: Claude (Claude Code by Anthropic)
+   Chat Log Link: PDF export attached to my final report (Chapter 4)
+   Prompts: "Track 2, baseball log" then step-by-step build requests (full list in the chat log) */
+
+/* Union garnet as the main color */
+:root {
+  --garnet: #862633;
+  --garnet-dark: #5e1a24;
+  --ink: #1f1f1f;
+  --muted: #666;
+  --line: #ddd;
+  --bg: #f6f4f2;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+  color: var(--ink);
+  background: var(--bg);
+}
+
+header {
+  background: var(--garnet);
+  color: white;
+  padding: 24px 16px;
+  text-align: center;
+}
+
+header h1 {
+  margin: 0 0 4px;
+}
+
+header p {
+  margin: 0;
+  opacity: 0.9;
+}
+
+main {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 16px;
+}
+
+.card {
+  background: white;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 16px;
+}
+
+.card h2 {
+  margin-top: 0;
+  color: var(--garnet);
+}
+
+/* Form fields sit in a grid that wraps onto more rows on small screens */
+.game-form {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 12px;
+  align-items: end;
+}
+
+.game-form label {
+  display: flex;
+  flex-direction: column;
+  font-size: 0.9rem;
+  color: var(--muted);
+  gap: 4px;
+}
+
+.game-form input {
+  padding: 8px;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+button {
+  background: var(--garnet);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 10px 14px;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+button:hover {
+  background: var(--garnet-dark);
+}
+
+/* The table scrolls sideways on a phone instead of breaking the page */
+.table-wrap {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th,
+td {
+  padding: 8px;
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+  white-space: nowrap;
+}
+
+th {
+  background: #f0e6e8;
+}
+
+.empty {
+  color: var(--muted);
+  text-align: center;
+}

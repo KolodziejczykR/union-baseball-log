@@ -41,8 +41,11 @@ function layout(title, content) {
 }
 
 // One form used two ways: blank for "add", filled in for "edit".
-function renderGameForm(action, game, buttonText) {
+// error is null normally; after a failed save it holds the message shown above the form.
+function renderGameForm(action, game, buttonText, error = null) {
+  const errorBox = error ? `<p class="form-error" role="alert">${escapeHtml(error)}</p>` : "";
   return `
+    ${errorBox}
     <form action="${action}" method="POST" class="game-form">
       <label>Player <input type="text" name="player" value="${escapeHtml(game.player)}" required></label>
       <label>Date <input type="date" name="game_date" value="${escapeHtml(game.game_date)}" required></label>
@@ -94,7 +97,8 @@ function renderGameRow(game) {
 }
 
 // The home page: add form, season leaderboard, and the full game log.
-function renderPage(games, leaders) {
+// formGame and formError are only passed after a failed save, to refill the add form.
+function renderPage(games, leaders, formGame = EMPTY_GAME, formError = null) {
   const leaderRows = leaders.length
     ? leaders.map(renderLeaderRow).join("")
     : `<tr><td colspan="8" class="empty">The leaderboard fills in once games are logged.</td></tr>`;
@@ -106,7 +110,7 @@ function renderPage(games, leaders) {
   return layout("Home", `
     <section class="card">
       <h2>Add a game line</h2>
-      ${renderGameForm("/games", EMPTY_GAME, "Save game")}
+      ${renderGameForm("/games", formGame, "Save game", formError)}
     </section>
 
     <section class="card">
@@ -135,22 +139,22 @@ function renderPage(games, leaders) {
 }
 
 // The edit page: the shared form, pre-filled, posting back to /games/:id.
-function renderEditPage(game) {
+function renderEditPage(game, error = null) {
   return layout("Edit game", `
     <section class="card">
       <h2>Edit game line</h2>
-      ${renderGameForm(`/games/${game.id}`, game, "Save changes")}
+      ${renderGameForm(`/games/${game.id}`, game, "Save changes", error)}
       <p><a href="/">Cancel</a></p>
     </section>`);
 }
 
-// A simple page for errors like "Hits can't be more than at-bats."
+// A simple page for errors that have no form to refill, like "Game not found".
 function renderMessage(title, text) {
   return layout(title, `
     <section class="card">
       <h2>${escapeHtml(title)}</h2>
       <p>${escapeHtml(text)}</p>
-      <p><a href="javascript:history.back()">Go back and fix it</a> or <a href="/">return to the log</a>.</p>
+      <p><a href="/">Return to the log</a>.</p>
     </section>`);
 }
 

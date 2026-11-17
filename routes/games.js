@@ -36,8 +36,9 @@ function readGameForm(body) {
   return { game, error };
 }
 
-// READ: the season leaderboard plus every game line (newest first).
-router.get("/", (req, res) => {
+// Reads everything the home page shows: every game line (newest first) and the season leaderboard.
+// Both GET / and a failed save (POST /games) need this, so it lives in one function.
+function loadHomeData() {
   const games = db
     .prepare("SELECT * FROM games ORDER BY game_date DESC, id DESC")
     .all();
@@ -60,6 +61,12 @@ router.get("/", (req, res) => {
     `)
     .all();
 
+  return { games, leaders };
+}
+
+// READ: the home page with an empty add form.
+router.get("/", (req, res) => {
+  const { games, leaders } = loadHomeData();
   res.send(renderPage(games, leaders));
 });
 
@@ -67,7 +74,10 @@ router.get("/", (req, res) => {
 router.post("/games", (req, res) => {
   const { game, error } = readGameForm(req.body);
   if (error) {
-    return res.status(400).send(renderMessage("Couldn't save that game", error));
+    // Nothing is saved. The home page comes back with the error and the typed values
+    // still in the form (game holds what was submitted), so only the bad box needs fixing.
+    const { games, leaders } = loadHomeData();
+    return res.status(400).send(renderPage(games, leaders, game, error));
   }
 
   // The ? placeholders keep typed text as data, never as SQL (stops SQL injection).
@@ -94,7 +104,10 @@ router.get("/games/:id/edit", (req, res) => {
 router.post("/games/:id", (req, res) => {
   const { game, error } = readGameForm(req.body);
   if (error) {
-    return res.status(400).send(renderMessage("Couldn't update that game", error));
+    // Same idea as a failed add: show the edit form again with what was typed.
+    // game came from the form, which has no id field, so add it back for the form's action URL.
+    game.id = Number(req.params.id);
+    return res.status(400).send(renderEditPage(game, error));
   }
 
   db.prepare(`

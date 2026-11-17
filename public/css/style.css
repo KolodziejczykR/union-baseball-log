@@ -127,6 +127,16 @@ th {
   text-align: center;
 }
 
+/* The message above the form after a failed save, e.g. "Hits can't be more than at-bats." */
+.form-error {
+  margin: 0 0 12px;
+  padding: 10px 12px;
+  border-left: 4px solid var(--garnet);
+  background: #fbeef0;
+  color: var(--garnet-dark);
+  font-weight: 600;
+}
+
 a {
   color: var(--garnet);
 }
